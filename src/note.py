@@ -108,10 +108,16 @@ class Note:
             self.add_entries(entries)
 
     def write(self):
-        file_path = os.path.join(Note.NOTE_PATH, self.label + ".md")
+        file_path = self.get_filepath()
 
         with open(file_path, "w") as f:
             f.write(f"# {self.label}\n\n")
 
             for i in range(len(self._entries)):
                 f.write(f"{i+1}. {self._entries[i]}\n")
+
+    def delete(self):
+        file_path = self.get_filepath()
+
+        if os.path.exists(file_path):
+            os.remove(file_path)

@@ -1,4 +1,9 @@
+import os
+
+
 class Note:
+    NOTE_PATH = "notes/"
+
     def __init__(self, label):
         self.label = label
         self._entries = []
@@ -38,3 +43,35 @@ class Note:
             s += "\n"
 
         return s[:-1]
+
+    def _read_note_file(self, label):
+        file_path = os.path.join(Note.NOTE_PATH, label + ".md")
+
+        if not os.path.isfile(file_path):
+            return ""
+
+        contents = ""
+        with open(file_path, "r") as f:
+            contents = f.read()
+
+        return contents
+
+    def _extract_entries(self, contents):
+        start = contents.find("1.")
+
+        return list(filter(lambda entry: len(entry) > 0, contents[start:].split("\n")))
+
+    def _remove_indexes(self, entries):
+        return list(map(lambda entry: entry[entry.find(".") + 2 :], entries))
+
+    def open(self, label=None):
+        if label:
+            self.label = label
+        else:
+            label = self.label
+
+        contents = self._read_note_file(label)
+        entries = self._extract_entries(contents)
+        if len(entries) > 0:
+            entries = self._remove_indexes(entries)
+            self.add_entries(entries)

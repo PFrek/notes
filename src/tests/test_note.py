@@ -73,6 +73,23 @@ class TestNote(unittest.TestCase):
 [12]: 12""",
         )
 
+    def test_remove_entry(self):
+        n1 = Note("Test")
+
+        n1.add_entries(["1", "2", "3", "4", "5", "6", "7", "8", "9"])
+
+        with self.assertRaises(ValueError):
+            n1.remove_entry(-1)
+
+        with self.assertRaises(ValueError):
+            n1.remove_entry(9)
+
+        n1.remove_entry(0)
+
+        n1.remove_entry(5)
+
+        self.assertEqual(n1._entries, ["2", "3", "4", "5", "6", "8", "9"])
+
 
 if __name__ == "__main__":
     unittest.main()

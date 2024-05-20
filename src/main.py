@@ -16,19 +16,25 @@ def main():
     parser.add_argument(
         "-r",
         "--remove",
+        metavar="index",
         nargs="?",
         const="1",
-        help="Remove an entry from the specified note group",
+        help="The position from which to remove an entry",
+    )
+
+    parser.add_argument(
+        "-i",
+        "--index",
+        help="The position where the new entry will be inserted",
+        metavar="index",
     )
 
     args = parser.parse_args()
 
     label = args.label.lower()
-    print("Label:", label)
     content = args.content
-    print("Content:", content)
     remove = args.remove
-    print("Remove:", args.remove)
+    index = args.index
 
     note = Note(label)
     note.open()
@@ -43,7 +49,20 @@ def main():
 
     if content is not None and len(content) > 0:
         content = " ".join(content)
-        note.add_entry(content)
+
+        if index is not None:
+            try:
+                index = int(index) - 1
+            except Exception as e:
+                print("Index error:", e)
+                print("Adding entry to end of list")
+                index = None
+
+        try:
+            note.add_entry(content, index)
+        except ValueError as e:
+            print("Index must be greater than zero")
+            return
 
     note.write()
 

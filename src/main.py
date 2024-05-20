@@ -1,4 +1,5 @@
 import argparse
+import os
 
 from note import Note
 
@@ -38,6 +39,10 @@ def main():
         help="Copy an entry to the clipboard. If no index is specified, copy all entries",
     )
 
+    parser.add_argument(
+        "-w", "--where", action="store_true", help="Print the location of the note file"
+    )
+
     args = parser.parse_args()
 
     label = args.label.lower()
@@ -45,9 +50,19 @@ def main():
     remove = args.remove
     index = args.index
     copy = args.copy
+    where = args.where
 
     note = Note(label)
     note.open()
+
+    if where:
+        filepath = note.get_filepath()
+        if not os.path.isfile(filepath):
+            print(f"No note file for label '{label}'")
+            return
+
+        print(os.path.abspath(note.get_filepath()))
+        return
 
     if copy is not None:
         if copy == "all":
@@ -83,6 +98,7 @@ def main():
                 remove_index = int(remove) - 1
 
             note.remove_entry(remove_index)
+            note.write()
         except ValueError as e:
             print("Error:", e)
             print("Skipping remove operation")
@@ -100,11 +116,10 @@ def main():
 
         try:
             note.add_entry(content, index)
+            note.write()
         except ValueError as e:
             print("Index must be greater than zero")
             return
-
-    note.write()
 
     print(note)
 

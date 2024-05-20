@@ -71,8 +71,12 @@ class Note:
 
         return s[:-1]
 
+    def get_filepath(self):
+        return os.path.join(Note.NOTE_PATH, self.label + ".md")
+
     def _read_note_file(self, label):
-        file_path = os.path.join(Note.NOTE_PATH, label + ".md")
+        self.label = label
+        file_path = self.get_filepath()
 
         if not os.path.isfile(file_path):
             return ""

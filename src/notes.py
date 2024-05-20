@@ -11,7 +11,14 @@ def list_labels(list_arg):
     def remove_extension(file):
         return file.split(".")[0]
 
-    labels = list(map(remove_extension, os.listdir(Note.NOTE_PATH)))
+    labels = list(
+        sorted(
+            map(
+                remove_extension,
+                filter(lambda path: path[-3:] == ".md", os.listdir(Note.NOTE_PATH)),
+            )
+        )
+    )
     print("Existing labels:")
     for label in labels:
         print("-", label)

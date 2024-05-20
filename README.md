@@ -30,6 +30,11 @@ $ pipenv run python src/notes.py ...
 $ ./notes.sh test Adding a new entry to the test label!
 ```
 
+## Dependencies
+
+- Pyperclip - [GitHub](https://github.com/asweigart/pyperclip)
+
+
 ## Usage
 
 ### Adding a new note to a group

@@ -1,4 +1,5 @@
 import os
+import pyperclip
 
 
 class Note:
@@ -30,14 +31,31 @@ class Note:
         for entry in entries[-1::-1]:
             self.add_entry(entry, index)
 
-    def remove_entry(self, index):
-        if index < 0 or index >= len(self._entries):
-            raise ValueError("Index out of bounds")
-
+    def remove_entry(self, index=None):
         if len(self._entries) == 0:
             return
 
+        if index is None:
+            self._entries.pop()
+            return
+
+        if index < 0 or index >= len(self._entries):
+            raise ValueError("Index out of bounds")
+
         self._entries.pop(index)
+
+    def to_clipboard(self, index=None):
+        if len(self._entries) == 0:
+            return
+
+        if index is None:
+            pyperclip.copy(f"{self}")
+            return
+
+        if index < 0 or index >= len(self._entries):
+            raise ValueError("Index out of bounds")
+
+        pyperclip.copy("[" + str(index + 1) + "]: " + self._entries[index] + "\n")
 
     def __repr__(self):
         if len(self._entries) == 0:

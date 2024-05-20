@@ -18,7 +18,7 @@ def main():
         "--remove",
         metavar="index",
         nargs="?",
-        const="1",
+        const="last",
         help="The position from which to remove an entry",
     )
 
@@ -29,20 +29,60 @@ def main():
         metavar="index",
     )
 
+    parser.add_argument(
+        "-c",
+        "--copy",
+        metavar="index",
+        nargs="?",
+        const="all",
+        help="Copy an entry to the clipboard. If no index is specified, copy all entries",
+    )
+
     args = parser.parse_args()
 
     label = args.label.lower()
     content = args.content
     remove = args.remove
     index = args.index
+    copy = args.copy
 
     note = Note(label)
     note.open()
 
+    if copy is not None:
+        if copy == "all":
+            copy_index = None
+        else:
+            try:
+                copy_index = int(copy) - 1
+            except Exception as e:
+                print("Index error:", e)
+                print("Skipping copy operation")
+                return
+
+        try:
+            note.to_clipboard(copy_index)
+            msg = "Copied "
+            if copy_index:
+                msg += "entry "
+            else:
+                msg += "entries "
+            msg += "to clipboard"
+            print(msg)
+            return
+
+        except ValueError as e:
+            print("Error:", e)
+            return
+
     if remove is not None:
         try:
-            remove_index = int(remove)
-            note.remove_entry(remove_index - 1)
+            if remove == "last":
+                remove_index = None
+            else:
+                remove_index = int(remove) - 1
+
+            note.remove_entry(remove_index)
         except ValueError as e:
             print("Error:", e)
             print("Skipping remove operation")

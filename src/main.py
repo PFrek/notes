@@ -27,14 +27,25 @@ def main():
     print("Label:", label)
     content = args.content
     print("Content:", content)
+    remove = args.remove
     print("Remove:", args.remove)
 
     note = Note(label)
     note.open()
 
+    if remove is not None:
+        try:
+            remove_index = int(remove)
+            note.remove_entry(remove_index - 1)
+        except ValueError as e:
+            print("Error:", e)
+            print("Skipping remove operation")
+
     if content is not None and len(content) > 0:
         content = " ".join(content)
         note.add_entry(content)
+
+    note.write()
 
     print(note)
 

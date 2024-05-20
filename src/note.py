@@ -30,6 +30,15 @@ class Note:
         for entry in entries[-1::-1]:
             self.add_entry(entry, index)
 
+    def remove_entry(self, index):
+        if index < 0 or index >= len(self._entries):
+            raise ValueError("Index out of bounds")
+
+        if len(self._entries) == 0:
+            return
+
+        self._entries.pop(index)
+
     def __repr__(self):
         if len(self._entries) == 0:
             return f"No entries under label '{self.label}'"
@@ -75,3 +84,12 @@ class Note:
         if len(entries) > 0:
             entries = self._remove_indexes(entries)
             self.add_entries(entries)
+
+    def write(self):
+        file_path = os.path.join(Note.NOTE_PATH, self.label + ".md")
+
+        with open(file_path, "w") as f:
+            f.write(f"# {self.label}\n\n")
+
+            for i in range(len(self._entries)):
+                f.write(f"{i+1}. {self._entries[i]}\n")

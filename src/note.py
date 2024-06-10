@@ -55,7 +55,7 @@ class Note:
         if index < 0 or index >= len(self._entries):
             raise ValueError("Index out of bounds")
 
-        pyperclip.copy("[" + str(index + 1) + "]: " + self._entries[index] + "\n")
+        pyperclip.copy(self._entries[index])
 
     def __repr__(self):
         if len(self._entries) == 0:

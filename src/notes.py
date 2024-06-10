@@ -66,12 +66,12 @@ def copy(copy_arg, note):
         except Exception as e:
             print("Index error:", e)
             print("Skipping copy operation")
-            return True
+            return False
 
     try:
         note.to_clipboard(copy_index)
         msg = "Copied "
-        if copy_index:
+        if copy_index is not None and copy_index >= 0:
             msg += "entry "
         else:
             msg += "entries "
